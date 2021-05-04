@@ -39,6 +39,18 @@
             .score-label.teal {
                 background-color: #66ffff;
             }
+
+            .team-goal {
+                background-color: rgba(57, 100, 120, 0.5);
+                width: 150px;
+                height: 50px;
+                text-align: center;
+                display: flex;
+                flex-direction: row;
+                align-content: center;
+                justify-content: space-around;
+                align-items: center;
+            }
         </style>
 
         <!-- Resources -->
@@ -59,7 +71,6 @@
 
                 // Create chart instance
                 var chart = am4core.create('chartdiv', am4charts.XYChart);
-
                
 
                 var scores = [
@@ -204,31 +215,29 @@
                 xAxis2.renderer.grid.template.stroke = am4core.color('#999');
 
                 var xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-                xAxis.dataFields.category = "question";
+                xAxis.dataFields.category = "questionArea";
                 xAxis.renderer.minGridDistance = 1;
-                xAxis.title.text = "Team mode";
-                xAxis.title.fontWeight = "bold";
-                // xAxis.title = "Team mode";
                 // xAxis.renderer.grid.template.disabled = true;
 
                 var xAxisLabel = xAxis.renderer.labels.template;
-                // xAxisLabel.rotation = -60;
+                xAxisLabel.rotation = -60;
                 xAxisLabel.fontWeight = 'bold';
-                // xAxisLabel.horizontalCenter = "right";
-                // xAxisLabel.verticalCenter = "middle";
-                // xAxisLabel.position = -1;
+                xAxisLabel.horizontalCenter = "right";
+                xAxisLabel.verticalCenter = "middle";
+                xAxisLabel.position = -1;
 
 
                 // Create value axis
                 var yAxis = chart.yAxes.push(new am4charts.CategoryAxis());
                 yAxis.dataFields.category = 'score';
                 yAxis.renderer.grid.template.disabled = true;
+                yAxis.title.text = "Team mode";
+                yAxis.title.fontWeight = "bold";
 
                 var yAxisLabel = yAxis.renderer.labels.template;
                 yAxisLabel.html = ''
 
                 yAxisLabel.adapter.add('html', function(html, target) {
-                    // console.log(target.dataItem);
                     if (target.dataItem.dataContext) {
                         var score = target.dataItem.dataContext.score;
                         return '<div class="score-label ' + score + ' "><p>Column left <br />' + score + ' score</p></div>';
@@ -237,23 +246,93 @@
                     return html;
                 });
 
+                yAxisLabel.tooltip = new am4core.Tooltip();
+                var chartTooltip = yAxisLabel.tooltip;
+                chartTooltip.getFillFromObject = false;
+                chartTooltip.background.fill = am4core.color("#ffffff");
+                chartTooltip.background.fillOpacity = 1;
+                chartTooltip.background.strokeWidth = 1;
+                chartTooltip.background.stroke = am4core.color("#000000")
+                chartTooltip.pointerOrientation = 'left';
+                chartTooltip.label.fill = am4core.color("#222222");
+                chartTooltip.label.minWidth = 400;
+                chartTooltip.label.maxWidth = 400;
+                chartTooltip.label.wrap = true;
 
-                // var yAxis2 = chart.yAxes.push(new am4charts.CategoryAxis());
-                // yAxis2.dataFields.category = 'score';
+                yAxisLabel.tooltipHTML = '';
 
-                // yAxis2.renderer.opposite = true;
-                // var yAxis2Label = yAxis2.renderer.labels.template;
-                // yAxis2Label.html = ''
+                yAxisLabel.adapter.add('tooltipHTML', function(html, target) {
+                    if (target.dataItem.dataContext) {
+                        var score = target.dataItem.dataContext.score;
+                        switch (score) {
+                            case 'purple':
+                                return score + ' means &lt; insert explanation here &gt;';
+                                break;
+                            case 'blue':
+                                return score + ' means &lt; insert explanation here &gt;';
+                                break;
+                            case 'green':
+                                return score + ' means &lt; insert explanation here &gt;';
+                                break;
+                            case 'teal':
+                                return score + ' means &lt; insert explanation here &gt;';
+                                break;
+                        }
+                    }
+                });
 
-                // yAxis2Label.adapter.add('html', function(html, target) {
-                //     // console.log(target.dataItem);
-                //     if (target.dataItem.dataContext) {
-                //         var score = target.dataItem.dataContext.score;
-                //         return '<div class="score-label ' + score + ' "><p>Column right <br />' + score + ' score</p></div>';
-                //     }
 
-                //     return html;
-                // });
+                var yAxis2 = chart.yAxes.push(new am4charts.CategoryAxis());
+                yAxis2.dataFields.category = 'score';
+
+                yAxis2.renderer.opposite = true;
+                var yAxis2Label = yAxis2.renderer.labels.template;
+                yAxis2Label.html = '';
+                yAxis2Label.text = '';
+                yAxis2Label.dx = -8;
+                yAxis2Label.dy = -1;
+
+                yAxis2Label.adapter.add('text', function(text, target) {
+                    return '';
+                });
+
+                yAxis2Label.adapter.add('html', function(html, target) {
+                    // console.log(target.dataItem);
+                    if (target.dataItem.dataContext && target.dataItem.dataContext.score === 'green') {
+                        var score = target.dataItem.dataContext.score;
+                        return '<div class="team-goal"><p>Team Goal</p></div>';
+                    } else {
+                        return '';
+                    }
+
+                    return html;
+                });
+
+                yAxis2Label.tooltipHTML = '';
+                yAxis2Label.tooltip = new am4core.Tooltip();
+                var chartTooltip = yAxis2Label.tooltip;
+                chartTooltip.getFillFromObject = false;
+                chartTooltip.background.fill = am4core.color("#ffffff");
+                chartTooltip.background.fillOpacity = 1;
+                chartTooltip.background.strokeWidth = 1;
+                chartTooltip.background.stroke = am4core.color("#000000")
+                chartTooltip.pointerOrientation = 'horizontal';
+                chartTooltip.label.fill = am4core.color("#222222");
+                chartTooltip.label.minWidth = 400;
+                chartTooltip.label.maxWidth = 400;
+                chartTooltip.label.wrap = true;
+
+                yAxis2Label.adapter.add('tooltipHTML', function(html, target) {
+                    // console.log(target.dataItem);
+                    if (target.dataItem.dataContext && target.dataItem.dataContext.score === 'green') {
+                        var score = target.dataItem.dataContext.score;
+                        return '<p>Description of the team goal goes here.</p>';
+                    } else {
+                        return '';
+                    }
+
+                    return html;
+                });
 
                 heatMapSeries();
 
@@ -271,9 +350,8 @@
 
                 // Create series
                 var lineSeries = chart.series.push(new am4charts.LineSeries());
-                lineSeries.dataFields.categoryX = 'question';
+                lineSeries.dataFields.categoryX = 'questionArea';
                 lineSeries.dataFields.categoryY = 'score';
-                lineSeries.name = 'Sales';
                 lineSeries.strokeWidth = 3;
                 lineSeries.strokeOpacity = 0;
                 lineSeries.xAxis = xAxis;
@@ -310,7 +388,7 @@
             function heatMapSeries() {
                 var series = chart.series.push(new am4charts.LineSeries());
                 series.data = a1Data;
-                series.dataFields.categoryX = "question";
+                series.dataFields.categoryX = "questionArea";
                 series.dataFields.categoryY = 'score';
                 series.dataFields.value = "respondents";
                 series.strokeOpacity = 0;
@@ -324,7 +402,7 @@
                 bullet2.tooltipText = "";
                 bullet2.fillOpacity = 1;
 
-                bullet2.tooltip = new am4core.Tooltip();
+                 bullet2.tooltip = new am4core.Tooltip();
                 var chartTooltip = bullet2.tooltip;
                 chartTooltip.getFillFromObject = false;
                 chartTooltip.background.fill = am4core.color("#ffffff");
