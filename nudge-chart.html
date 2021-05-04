@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+
+
+        <!-- Styles -->
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            #chartdiv {
+                width: 100%;
+                height: 80vh;
+            }
+            .score-label {
+                width: 100px;
+                height: 50px;
+                text-align: center;
+                display: flex;
+                flex-direction: row;
+                align-content: center;
+                justify-content: space-around;
+                align-items: center;
+            }
+
+            .score-label.purple {
+                background-color: #7030a0;
+            }
+            .score-label.blue {
+                background-color: #00b0f0;
+            }
+            .score-label.green {
+                background-color: #66ff33;
+            }
+            .score-label.teal {
+                background-color: #66ffff;
+            }
+        </style>
+
+        <!-- Resources -->
+        <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+        <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+        <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+    </head>
+    <body>
+        
+
+        <!-- Chart code -->
+        <script>
+            am4core.ready(function () {
+                // Themes begin
+                am4core.useTheme(am4themes_animated);
+                // Themes end
+
+                // Create chart instance
+                var chart = am4core.create('chartdiv', am4charts.XYChart);
+
+               
+
+                var scores = [
+                    'Never',
+                    'Sometimes',
+                    'Often',
+                    'Always'
+                ]
+
+                // Add data
+                chart.data = [
+
+                    {score: 'Never'},
+                    {score: 'Sometimes'},
+                    {score: 'Often'},
+                    {score: 'Always'},
+                    {
+                        question: 'Q1',
+                        questionText: 'Says nothing at all even when asked',
+                        score: 'Never',
+                        colour: '#d0c07a',
+                    },
+                    {
+                        question: 'Q2',
+                        questionText: 'Interupts others when they are talking',
+                        score: scores[Math.floor(Math.random() * 4)],
+                        colour: '#7030a0',
+                    },
+                    {
+                        question: 'Q3',
+                        questionText: 'Talks more than listens',
+                        score: scores[Math.floor(Math.random() * 4)],
+                        colour: 'red',
+                    },
+                    {
+                        question: 'Q4',
+                        questionText: 'Listens respectfully in meetings',
+                        score: scores[Math.floor(Math.random() * 4)],
+                        colour: '#00b0f0',
+                    },
+                    {
+                        question: 'Q5',
+                        questionText: 'Asks open questions then really listens',
+                        score: scores[Math.floor(Math.random() * 4)],
+                        colour: '#ffc000',
+                    },
+                    {
+                        question: 'Q6',
+                        questionText: 'Encourages others to ask open questions',
+                        score: scores[Math.floor(Math.random() * 4)],
+                        colour: '#66ff33',
+                    },
+                    {
+                        question: 'Q7',
+                        questionText: 'Plays back to check own understanding',
+                        score: scores[Math.floor(Math.random() * 4)],
+                        colour: 'yellow',
+                    },
+                    {
+                        question: 'Q8',
+                        questionText: 'Summarises so everyone understands',
+                        score: scores[Math.floor(Math.random() * 4)],
+                        colour: '#66ffff',
+                    },
+                    {
+                        question: 'Q9',
+                        questionText: 'Makes it easy for everyone to speak their minds',
+                        score: scores[Math.floor(Math.random() * 4)],
+                        colour: '#009999',
+                    },
+                ];
+
+                var a1Data = [
+                    {
+                        question: 'Q1',
+                        questionText: 'Says nothing at all even when asked',
+                        respondents: 12,
+                        score: 'Never',
+                    },
+                    {
+                        question: 'Q1',
+                        questionText: 'Says nothing at all even when asked',
+                        respondents: 2,
+                        score: 'Sometimes',
+                    },
+                ];
+
+                // Create axes
+                var xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+                xAxis.dataFields.category = "questionText";
+                xAxis.renderer.minGridDistance = 1;
+                // xAxis.renderer.grid.template.disabled = true;
+
+                var xAxisLabel = xAxis.renderer.labels.template;
+                // xAxisLabel.rotation = -60;
+                xAxisLabel.fontWeight = 'bold';
+                xAxisLabel.maxWidth = 150;
+                xAxisLabel.wrap = true;
+                // xAxisLabel.horizontalCenter = "right";
+                // xAxisLabel.verticalCenter = "middle";
+                // xAxisLabel.position = -1;
+
+                xAxisLabel.html = '';
+                xAxisLabel.adapter.add('html', function(html, target) {
+                    if (target.dataItem.dataContext) {
+                        return '<div style="text-align: center; font-weight: bold;">' + target.dataItem.dataContext.questionText +  '</div>';
+                    }
+                    return html;
+                });
+
+
+                // Create value axis
+                var yAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+                yAxis.dataFields.category = 'score';
+                yAxis.renderer.grid.template.disabled = true;
+
+                var yAxisLabel = yAxis.renderer.labels.template;
+                // yAxisLabel.html = ''
+
+                // yAxisLabel.adapter.add('html', function(html, target) {
+                //     // console.log(target.dataItem);
+                //     if (target.dataItem.dataContext) {
+                //         var score = target.dataItem.dataContext.score;
+                //         return '<div class="score-label ' + score + ' "><p>Column left <br />' + score + ' score</p></div>';
+                //     }
+
+                //     return html;
+                // });
+
+
+                // var yAxis2 = chart.yAxes.push(new am4charts.CategoryAxis());
+                // yAxis2.dataFields.category = 'score';
+
+                // yAxis2.renderer.opposite = true;
+                // var yAxis2Label = yAxis2.renderer.labels.template;
+                // yAxis2Label.html = ''
+
+                // yAxis2Label.adapter.add('html', function(html, target) {
+                //     // console.log(target.dataItem);
+                //     if (target.dataItem.dataContext) {
+                //         var score = target.dataItem.dataContext.score;
+                //         return '<div class="score-label ' + score + ' "><p>Column right <br />' + score + ' score</p></div>';
+                //     }
+
+                //     return html;
+                // });
+
+                heatMapSeries();
+
+
+                // Create series
+                var lineSeries = chart.series.push(new am4charts.LineSeries());
+                lineSeries.dataFields.categoryX = 'questionText';
+                lineSeries.dataFields.categoryY = 'score';
+                lineSeries.strokeWidth = 3;
+                lineSeries.strokeOpacity = 0;
+                lineSeries.xAxis = xAxis;
+
+                // Add simple bullet
+                var bullet = lineSeries.bullets.push(new am4charts.CircleBullet());
+                bullet.circle.radius = 20;
+                bullet.circle.strokeOpacity = 0;
+
+                bullet.adapter.add('fill', function(color, target) {
+                    if (target.dataItem.dataContext) {
+                        return am4core.color(target.dataItem.dataContext.colour);
+                    }
+                    return color;
+                });
+
+
+
+
+
+            function heatMapSeries() {
+                var series = chart.series.push(new am4charts.LineSeries());
+                series.data = a1Data;
+                series.dataFields.categoryX = "questionText";
+                series.dataFields.categoryY = 'score';
+                series.dataFields.value = "respondents";
+                series.strokeOpacity = 0;
+                series.name = "Series 1";
+                series.xAxis = xAxis;
+
+                var bullet2 = series.bullets.push(new am4charts.CircleBullet());
+                bullet2.strokeOpacity = 0.2;
+                bullet2.stroke = am4core.color("#ffffff");
+                bullet2.nonScalingStroke = true;
+                bullet2.tooltipText = "";
+                bullet2.fillOpacity = 0.5;
+
+                bullet2.tooltip = new am4core.Tooltip();
+                var chartTooltip = bullet2.tooltip;
+                chartTooltip.getFillFromObject = false;
+                chartTooltip.background.fill = am4core.color("#ffffff");
+                chartTooltip.background.fillOpacity = 1;
+                chartTooltip.background.strokeWidth = 1;
+                chartTooltip.background.stroke = am4core.color("#000000")
+                chartTooltip.pointerOrientation = 'left';
+                chartTooltip.label.fill = am4core.color("#222222");
+                chartTooltip.label.minWidth = 400;
+                chartTooltip.label.maxWidth = 400;
+                chartTooltip.label.wrap = true;
+
+                bullet2.tooltipHTML = '';
+                bullet2.adapter.add('tooltipHTML', function(content, target) {
+                    if (target.dataItem) {
+                        var questionData = target.dataItem.dataContext;
+                        var content = '<div><p>Question: <strong>' + questionData.questionText + '</strong></p>';
+                            content += '<p><strong>' + questionData.respondents + '</strong> respondents have answered: <strong>' + questionData.answer + '</strong><p>';
+                            content += '</div>';
+                    }
+                    return content;
+                });
+                
+                series.heatRules.push({
+                    target: bullet2.circle,
+                    min: 5,
+                    max: 30,
+                    property: "radius"
+                });
+            }
+
+            }); // end am4core.ready()
+        </script>
+
+        <!-- HTML -->
+        <div id="chartdiv"></div>
+    </body>
+</html>
